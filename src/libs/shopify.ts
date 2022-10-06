@@ -1,5 +1,5 @@
-const domain = String(process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN);
-const storefrontAccessToken = String(process.env.NEXT_PUBLIC_SHOPIFY_STORE_FRONT_ACCESS_TOKEN);
+const domain = String(process.env.SHOPIFY_STORE_DOMAIN);
+const storefrontAccessToken = String(process.env.SHOPIFY_STORE_FRONT_ACCESS_TOKEN);
 const ShopifyVersion = "2022-07";
 
 export async function callShopify(query: any) {

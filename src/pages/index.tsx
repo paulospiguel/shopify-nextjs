@@ -1,17 +1,29 @@
 import type { NextPage } from 'next'
 import styles from '../styles/Home.module.css'
 
-import { getAllProducts } from '../services/products/getAllProducts'
+import {
+  useProductsQuery,
+  Product
+} from "../graphql/generated";
 
 
 interface HomeProps {
-  products: any[]
+  products: Product[]
 }
 
 const Home = ({ products }: HomeProps) => {
+
+  const { data, loading } = useProductsQuery({
+    variables: {
+      first: 10
+    }
+  })
+
   return (
     <div className={styles.container}>
-      {JSON.stringify(products, null, 2)}
+      <p>Hello Shopify</p>
+      {loading ? "carregando..." :
+        <pre>{JSON.stringify(data?.products.edges[0].node.title, null, 2)}</pre>}
     </div>
   )
 }
@@ -19,13 +31,13 @@ const Home = ({ products }: HomeProps) => {
 
 export async function getServerSideProps(ctx: any) {
 
-  const { products } = await getAllProducts();
+  /* const { products } = await getAllProducts();
 
-  console.log(products?.edges);
+  console.log(products?.edges); */
 
   return {
     props: {
-      products: products?.edges
+      products: [] //products?.edges
     },
   }
 }
