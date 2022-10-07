@@ -7,6 +7,9 @@ const nextConfig = {
     config.experiments.topLevelAwait = true;
     return config;
   },
+  images: {
+    domains: ["cdn.shopify.com"],
+  },
   experimental: {
     images: {
       allowFutureImage: true,

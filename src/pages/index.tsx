@@ -1,46 +1,45 @@
-import type { NextPage } from 'next'
-import styles from '../styles/Home.module.css'
 
 import {
-  useProductsQuery,
-  Product
+  IProduct,
+  IProductsQuery,
+  ProductsDocument
 } from "../graphql/generated";
 
+import { useGQLQuery } from '../hooks/useGQLQuery';
+import { UseQueryResult } from '@tanstack/react-query';
+import { Box, Flex, Stack, Text } from "@chakra-ui/react";
+import Image from "next/image";
 
 interface HomeProps {
-  products: Product[]
+  products: IProduct[]
 }
 
 const Home = ({ products }: HomeProps) => {
-
-  const { data, loading } = useProductsQuery({
-    variables: {
-      first: 10
-    }
-  })
+  const { data, isLoading, error } = useGQLQuery(["productsList"], ProductsDocument, {
+    first: 8
+  }) as UseQueryResult<IProductsQuery>;
 
   return (
-    <div className={styles.container}>
-      <p>Hello Shopify</p>
-      {loading ? "carregando..." :
-        <pre>{JSON.stringify(data?.products.edges[0].node.title, null, 2)}</pre>}
-    </div>
+    <Stack>
+      <p>Hello Shopify Demo</p>
+      {isLoading ? "carregando..." :
+        <Flex gap={2} alignItems="center" justifyContent="center">
+          {data?.products.edges.map(item => (
+            <Box rounded="md" key={item.node.id} width={52} height={72} shadow="md" textAlign="center" pt="1.5">
+              <Box position="relative" width="full" height={36} px={10}>
+                <Image
+                  src={item.node.images.edges[0].node.url}
+                  layout="fill"
+                />
+              </Box>
+              <Text>{item.node.title}</Text>
+              <Text>{item.node.priceRange.minVariantPrice.amount} {item.node.priceRange.minVariantPrice.currencyCode}</Text>
+            </Box>
+          ))}
+
+        </Flex>}
+    </Stack>
   )
 }
-
-
-export async function getServerSideProps(ctx: any) {
-
-  /* const { products } = await getAllProducts();
-
-  console.log(products?.edges); */
-
-  return {
-    props: {
-      products: [] //products?.edges
-    },
-  }
-}
-
 
 export default Home
